@@ -1,0 +1,68 @@
+/*
+Created By: Roopmathi Gunna 
+Bringing data from CSV files into MySQL Workbench 8.0 and setting up constraints.
+*/
+
+-- Step 1: Create Database
+CREATE DATABASE Red30Tech;
+
+-- Step 2: Switch to the new database
+USE Red30Tech;
+
+-- Step 3: Uploading datasets (This step is specific to SSMS, MySQL Workbench handles this differently)
+-- iN MySQL I used Table Load Wizard
+
+-- Step 4: Add Primary Key Constraints
+
+-- SET PK FOR ONLINE RETAIL SALES
+ALTER TABLE OnlineRetailSales
+MODIFY COLUMN OrderNum FLOAT NOT NULL;
+select * from SessionInfo;
+
+-- MySQL modification: You have to convert the dates in text to "YYYY-MM-DD" before executing the next block
+UPDATE SessionInfo
+SET `Start Date` = DATE_FORMAT(STR_TO_DATE(`Start Date`, '%m/%d/%Y %h:%i %p'), '%Y-%m-%d'),
+    `End Date` = DATE_FORMAT(STR_TO_DATE(`End Date`, '%m/%d/%Y %h:%i %p'), '%Y-%m-%d');
+
+-- SET PK FOR SESSION INFO
+ALTER TABLE SessionInfo
+MODIFY COLUMN `Start Date` DATETIME NOT NULL,
+MODIFY COLUMN `End Date` DATETIME NOT NULL,
+MODIFY COLUMN `Session Name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL;
+
+ALTER TABLE SessionInfo
+ADD PRIMARY KEY (`Start Date`, `End Date`, `Session Name`);
+
+-- SET PK FOR SPEAKER INFO modified for MySQL 
+ALTER TABLE SpeakerInfo
+MODIFY COLUMN `Name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+MODIFY COLUMN `Session Name` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL;
+
+-- Now set the primary key
+ALTER TABLE SpeakerInfo
+ADD PRIMARY KEY (`Name`, `Session Name`);
+
+ALTER TABLE SessionInfo
+ADD PRIMARY KEY (`Start Date`, `End Date`, `Session Name`);
+
+-- SET PK FOR COVENTION ATTENDEES
+ALTER TABLE ConventionAttendees
+MODIFY COLUMN `Email` VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL;
+
+ALTER TABLE ConventionAttendees
+ADD PRIMARY KEY (`Email`);
+
+-- SET PK FOR INVENTORY
+ALTER TABLE Inventory
+MODIFY COLUMN ProdNumber VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL,
+MODIFY COLUMN ProdName VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL;
+
+ALTER TABLE Inventory
+ADD PRIMARY KEY (`ProdNumber`, `ProdName`);
+
+-- SET PK FOR EMPLOYEE DIRECTORY
+ALTER TABLE EmployeeDirectory
+MODIFY COLUMN EmployeeID VARCHAR(255) CHARACTER SET utf8mb4 NOT NULL;
+
+ALTER TABLE EmployeeDirectory
+ADD PRIMARY KEY (`EmployeeID`);
